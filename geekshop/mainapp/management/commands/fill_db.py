@@ -12,8 +12,8 @@ JSON_PATH = 'mainapp/jsons'
 
 
 def load_from_json(file_name):
- with open(os.path.join(JSON_PATH, file_name + '.json'), mode='r') as infile:
-     return json.load(infile)
+    with open(os.path.join(JSON_PATH, file_name + '.json'), mode='r') as infile:
+        return json.load(infile)
 
 
 class Command(BaseCommand):

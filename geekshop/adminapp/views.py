@@ -165,8 +165,9 @@ def categories(request):
 class ProductCategoryCreateView(CreateView):
     model = ProductCategory
     template_name = 'adminapp/category_update.html'
+    form_class = ProductCategoryEditForm
     success_url = reverse_lazy('admin_staff:categories')
-    fields = '__all__'
+    # fields = '__all__'
 
 
 class ProductReadView(DetailView):
@@ -176,9 +177,10 @@ class ProductReadView(DetailView):
 
 class ProductCategoryUpdateView(UpdateView):
     model = ProductCategory
+    form_class = ProductCategoryEditForm
     template_name = 'adminapp/category_update.html'
     success_url = reverse_lazy('admin_staff:categories')
-    fields = '__all__'
+    # fields = '__all__'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -188,6 +190,7 @@ class ProductCategoryUpdateView(UpdateView):
 
 class ProductCategoryDeleteView(DeleteView):
     model = ProductCategory
+    form_class = ProductCategoryEditForm
     template_name = 'adminapp/category_delete.html'
     success_url = reverse_lazy('admin_staff:categories')
 
