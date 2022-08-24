@@ -9,3 +9,7 @@ def basket(request):
         return {
             'basket': basket,
         }
+    else:
+        return {
+
+        }
