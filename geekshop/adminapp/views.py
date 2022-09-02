@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import user_passes_test
 from mainapp.models import ProductCategory, Product
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.dispatch import receiver
+from django.db.models.signals import pre_save, pre_delete
 
 
 class UsersListView(LoginRequiredMixin, ListView):
@@ -165,8 +167,9 @@ def categories(request):
 class ProductCategoryCreateView(CreateView):
     model = ProductCategory
     template_name = 'adminapp/category_update.html'
+    form_class = ProductCategoryEditForm
     success_url = reverse_lazy('admin_staff:categories')
-    fields = '__all__'
+    # fields = '__all__'
 
 
 class ProductReadView(DetailView):
@@ -176,9 +179,10 @@ class ProductReadView(DetailView):
 
 class ProductCategoryUpdateView(UpdateView):
     model = ProductCategory
+    form_class = ProductCategoryEditForm
     template_name = 'adminapp/category_update.html'
     success_url = reverse_lazy('admin_staff:categories')
-    fields = '__all__'
+    # fields = '__all__'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -188,6 +192,7 @@ class ProductCategoryUpdateView(UpdateView):
 
 class ProductCategoryDeleteView(DeleteView):
     model = ProductCategory
+    form_class = ProductCategoryEditForm
     template_name = 'adminapp/category_delete.html'
     success_url = reverse_lazy('admin_staff:categories')
 
@@ -201,9 +206,13 @@ def product_category_delete(request, pk):
     title = 'пользователи/удаление'
 
     category = get_object_or_404(ProductCategory, pk=pk)
+    products_list = Product.objects.filter(category__pk=pk)
 
     if request.method == 'POST':
         category.is_active = False
+        for product in products_list:
+            product.is_active = False
+            product.save()
         category.save()
         return HttpResponseRedirect(reverse('admin_staff:categories'))
 
@@ -296,3 +305,5 @@ def product_delete(request, pk):
                'product_to_delete': product}
 
     return render(request, 'adminapp/product_delete.html', context)
+
+
